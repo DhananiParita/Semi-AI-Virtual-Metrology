@@ -1,4 +1,4 @@
-<<<<<<< HEAD
+
 # Semi-AI Virtual Metrology
 
 An AI-powered semiconductor defect detection system that predicts wafer yield loss using a Random Forest model trained on real fab sensor data (SECOM dataset). Instead of waiting 4–6 hours for physical metrology, this tool gives an instant prediction from 3 key sensor inputs.
