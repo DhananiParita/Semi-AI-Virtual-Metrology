@@ -8,7 +8,7 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="SVM AI Metrology">
     <title>SVM AI</title>
-    <link rel="icon" type="image/png" href="l1.png"> 
+    <link rel="icon" type="image/png" href="static/favicon.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     <style>
@@ -24,8 +24,8 @@
             --success: #10b981;
         }
 
-        * { 
-            box-sizing: border-box; 
+        * {
+            box-sizing: border-box;
         }
 
         body {
@@ -38,7 +38,7 @@
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: flex-start; 
+            align-items: flex-start;
         }
 
         .main-container {
@@ -47,7 +47,7 @@
             display: grid;
             grid-template-columns: 380px 1fr;
             gap: 24px;
-            align-items: stretch; 
+            align-items: stretch;
         }
 
         .card {
@@ -61,8 +61,8 @@
             transition: transform 0.2s ease, border-color 0.2s ease;
         }
 
-        .card:hover { 
-            border-color: rgba(255, 255, 255, 0.15); 
+        .card:hover {
+            border-color: rgba(255, 255, 255, 0.15);
         }
 
         .brand-header {
@@ -72,7 +72,7 @@
             margin-bottom: 30px;
         }
 
-       .cyber-logo {
+        .cyber-logo {
             width: 45px;
             height: 45px;
             border-radius: 12px;
@@ -108,7 +108,7 @@
             padding-bottom: 10px;
         }
 
-        .control-group { 
+        .control-group {
             display: block;
             border: none;
             padding: 0;
@@ -184,11 +184,12 @@
             transform: translateY(-1px);
         }
 
-        .btn:disabled { 
-            background: #333; 
-            color: #666; 
-            cursor: not-allowed; 
-            box-shadow: none; 
+        .btn:disabled {
+            background: #333;
+            color: #666;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
         }
 
         .btn-outline {
@@ -228,14 +229,14 @@
             margin-top: 20px;
         }
 
-        .log-entry { 
+        .log-entry {
             display: block;
-            margin: 0 0 6px 0; 
+            margin: 0 0 6px 0;
         }
 
-        .log-entry::before { 
-            content: "> "; 
-            color: #444; 
+        .log-entry::before {
+            content: "> ";
+            color: #444;
         }
 
         .log-highlight { color: var(--accent-color); }
@@ -266,7 +267,7 @@
             font-family: 'JetBrains Mono', monospace;
             margin-top: 15px;
             font-size: 1.1rem;
-            min-height: 1.5em; 
+            min-height: 1.5em;
         }
 
         .data-panel {
@@ -287,9 +288,9 @@
             flex-direction: column;
         }
 
-        .doc-item { 
+        .doc-item {
             display: block;
-            margin-bottom: 25px; 
+            margin-bottom: 25px;
         }
 
         .doc-title {
@@ -332,31 +333,53 @@
         .text-white { color: #fff; font-weight: 600; }
         .text-dark { color: #555; }
 
+        .model-status-banner {
+            display: none;
+            padding: 10px 14px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            margin-bottom: 20px;
+            border: 1px solid;
+        }
+
+        .model-status-banner.error {
+            background: rgba(239, 68, 68, 0.08);
+            border-color: rgba(239, 68, 68, 0.3);
+            color: var(--danger);
+        }
+
+        .model-status-banner.ok {
+            background: rgba(16, 185, 129, 0.08);
+            border-color: rgba(16, 185, 129, 0.3);
+            color: var(--success);
+        }
+
         @media (max-width: 900px) {
-            .main-container { 
-                grid-template-columns: 1fr; 
+            .main-container {
+                grid-template-columns: 1fr;
             }
-            .doc-grid { 
-                grid-template-columns: 1fr; 
-                gap: 20px; 
+            .doc-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
             }
         }
 
         @media (max-width: 600px) {
             body {
-                padding: 15px 10px; 
+                padding: 15px 10px;
             }
             .card {
-                padding: 20px; 
+                padding: 20px;
             }
             .brand-text h1 {
-                font-size: 1.1rem; 
+                font-size: 1.1rem;
             }
             .chart-wrapper {
-                height: 250px; 
+                height: 250px;
             }
             .log-window {
-                height: 120px; 
+                height: 120px;
             }
         }
     </style>
@@ -366,15 +389,17 @@
     <main class="main-container">
 
         <aside class="card">
-            
+
             <header class="brand-header">
-                <img src="l1.png" alt="SVM AI Logo" class="cyber-logo">
+                <img src="static/favicon.png" alt="SVM AI Logo" class="cyber-logo">
                 <hgroup class="brand-text">
                     <h1>Semi-AI Virtual Metrology</h1>
                 </hgroup>
             </header>
-            
+
             <span class="subtitle-text">AI-POWERED DEFECT DETECTION</span>
+
+            <div id="modelStatusBanner" class="model-status-banner"></div>
 
             <fieldset class="control-group">
                 <header class="control-header">
@@ -406,7 +431,9 @@
             <span class="result-bar-container">
                 <span id="riskBar" class="result-bar"></span>
             </span>
-            <output id="resultText" class="result-status">SYSTEM READY</output>
+
+            <output id="resultText" class="result-status"></output>
+
         </aside>
 
         <section class="data-panel">
@@ -415,11 +442,11 @@
                 <figure class="chart-wrapper">
                     <canvas id="sensorChart" aria-label="Radar chart showing sensor telemetry data"></canvas>
                 </figure>
-                
-                <output id="logWindow" class="log-window">
-                    <p class="log-entry">System initialized [v1.0.4]</p>
+
+                <div id="logWindow" class="log-window">
+                    <p class="log-entry">System initialized [v1.0.5]</p>
                     <p class="log-entry">Waiting for input stream...</p>
-                </output>
+                </div>
             </article>
 
             <article class="card">
@@ -478,14 +505,41 @@
             const logs = document.getElementById('logWindow');
             const entry = document.createElement('p');
             entry.className = 'log-entry';
-            
             if (type === 'error') entry.className += ' log-error';
             if (type === 'success') entry.className += ' log-success';
             if (type === 'highlight') entry.className += ' log-highlight';
-
             entry.innerText = msg;
             logs.appendChild(entry);
             logs.scrollTop = logs.scrollHeight;
+        }
+
+        function showModelBanner(message, type) {
+            const banner = document.getElementById('modelStatusBanner');
+            banner.textContent = message;
+            banner.className = `model-status-banner ${type}`;
+            banner.style.display = 'block';
+        }
+
+        function hideModelBanner() {
+            document.getElementById('modelStatusBanner').style.display = 'none';
+        }
+
+        async function checkModelStatus() {
+            try {
+                const res = await fetch('/status');
+                const data = await res.json();
+                if (!data.ready) {
+                    showModelBanner('MODEL NOT READY: ' + data.message, 'error');
+                    document.getElementById('runBtn').disabled = true;
+                    addLog('Model not ready: ' + data.message, 'error');
+                } else {
+                    hideModelBanner();
+                    addLog('Model status: Ready.', 'success');
+                }
+            } catch (e) {
+                showModelBanner('Cannot reach server. Is Flask running?', 'error');
+                addLog('Server unreachable.', 'error');
+            }
         }
 
         function initChart() {
@@ -513,13 +567,13 @@
                     },
                     options: {
                         maintainAspectRatio: false,
-                        elements: { line: { tension: 0.3 } }, 
+                        elements: { line: { tension: 0.3 } },
                         scales: {
                             r: {
                                 grid: { color: 'rgba(255,255,255,0.05)' },
                                 angleLines: { color: 'rgba(255,255,255,0.05)' },
-                                pointLabels: { color: '#888', font: {size: 11} },
-                                ticks: { display: false }, 
+                                pointLabels: { color: '#888', font: { size: 11 } },
+                                ticks: { display: false },
                                 suggestedMin: -5,
                                 suggestedMax: 5
                             }
@@ -528,7 +582,7 @@
                     }
                 });
             } catch (e) {
-                addLog("Visual core failed to load.", 'error');
+                addLog('Visual core failed to load.', 'error');
             }
         }
 
@@ -536,7 +590,7 @@
             const v1 = document.getElementById('s_487').value;
             const v2 = document.getElementById('s_96').value;
             const v3 = document.getElementById('s_481').value;
-            
+
             document.getElementById('disp_487').innerText = parseFloat(v1).toFixed(1);
             document.getElementById('disp_96').innerText = parseFloat(v2).toFixed(1);
             document.getElementById('disp_481').innerText = parseFloat(v3).toFixed(1);
@@ -552,15 +606,15 @@
             const exportBtn = document.getElementById('exportBtn');
             const bar = document.getElementById('riskBar');
             const txt = document.getElementById('resultText');
-            
+
             exportBtn.style.display = 'none';
             btn.disabled = true;
-            btn.innerText = "PROCESSING...";
-            txt.innerText = "ACQUIRING SIGNAL...";
-            txt.style.color = "#737373";
-            
-            addLog("Batch process initiated...");
-            
+            btn.innerText = 'PROCESSING...';
+            txt.innerText = 'ACQUIRING SIGNAL...';
+            txt.style.color = '#737373';
+
+            addLog('Batch process initiated...');
+
             await new Promise(r => setTimeout(r, 600));
 
             const data = {
@@ -570,56 +624,64 @@
             };
 
             try {
-                addLog("Streaming data to model endpoint...", 'highlight');
+                addLog('Streaming data to model endpoint...', 'highlight');
+
                 const response = await fetch('/predict', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(data)
                 });
 
-                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const result = await response.json();
-                if (result.error) throw new Error(result.error);
+
+                if (!response.ok) {
+                    throw new Error(result.error || `Server error: HTTP ${response.status}`);
+                }
+
+                if (result.error) {
+                    throw new Error(result.error);
+                }
 
                 const prob = result.probability;
                 lastProb = prob;
 
-                addLog(`Inference success. Probability: ${(prob*100).toFixed(2)}%`, 'success');
+                addLog(`Inference success. Probability: ${(prob * 100).toFixed(2)}%`, 'success');
 
-                bar.style.width = `${prob*100}%`;
+                bar.style.width = `${prob * 100}%`;
 
                 if (prob > 0.10) {
                     bar.style.backgroundColor = '#ef4444';
-                    txt.innerText = "CRITICAL DEFECT DETECTED";
-                    txt.style.color = "#ef4444";
-                    addLog("ALERT: YIELD EXCURSION. HALT TOOL.", 'error');
+                    txt.innerText = 'CRITICAL DEFECT DETECTED';
+                    txt.style.color = '#ef4444';
+                    addLog('ALERT: YIELD EXCURSION. HALT TOOL.', 'error');
                 } else {
                     bar.style.backgroundColor = '#10b981';
-                    txt.innerText = "WAFER ACCEPTED";
-                    txt.style.color = "#10b981";
-                    addLog("Status: Nominal.", 'success');
+                    txt.innerText = 'WAFER ACCEPTED';
+                    txt.style.color = '#10b981';
+                    addLog('Status: Nominal.', 'success');
                 }
-                
-                addLog("Report Generated. Available for PDF download.", 'highlight');
-                exportBtn.innerText = "EXPORT PDF REPORT";
+
+                addLog('Report available for PDF download.', 'highlight');
+                exportBtn.innerText = 'EXPORT PDF REPORT';
                 exportBtn.style.display = 'block';
 
             } catch (error) {
                 addLog(`Runtime Error: ${error.message}`, 'error');
-                txt.innerText = "SYSTEM ERROR";
-                txt.style.color = "#ef4444";
+                txt.innerText = 'SYSTEM ERROR';
+                txt.style.color = '#ef4444';
+                showModelBanner('Error: ' + error.message, 'error');
             } finally {
                 btn.disabled = false;
-                btn.innerText = "INITIATE SCAN";
+                btn.innerText = 'INITIATE SCAN';
             }
         }
 
         async function downloadReport() {
-            addLog("Generating PDF...", 'highlight');
+            addLog('Generating PDF...', 'highlight');
             const exportBtn = document.getElementById('exportBtn');
             exportBtn.disabled = true;
-            exportBtn.innerText = "GENERATING PDF...";
-            
+            exportBtn.innerText = 'GENERATING PDF...';
+
             const data = {
                 prob: lastProb,
                 sensors: {
@@ -636,28 +698,35 @@
                     body: JSON.stringify(data)
                 });
 
-                if (!response.ok) throw new Error("PDF Generation Failed");
+                if (!response.ok) {
+                    const err = await response.json().catch(() => ({ error: 'PDF generation failed.' }));
+                    throw new Error(err.error || 'PDF generation failed.');
+                }
 
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.href = url;
-                link.download = `Diagnostic_Report_${new Date().toISOString().slice(0,10)}.pdf`;
+                link.download = `Diagnostic_Report_${new Date().toISOString().slice(0, 10)}.pdf`;
+                document.body.appendChild(link);
                 link.click();
-                
-                addLog("PDF exported successfully.", 'success');
+                document.body.removeChild(link);
+                window.URL.revokeObjectURL(url);
+
+                addLog('PDF exported successfully.', 'success');
 
             } catch (error) {
                 addLog(`Export Error: ${error.message}`, 'error');
             } finally {
-                 exportBtn.disabled = false;
-                 exportBtn.innerText = "EXPORT PDF REPORT";
+                exportBtn.disabled = false;
+                exportBtn.innerText = 'EXPORT PDF REPORT';
             }
         }
 
-        window.onload = function() {
+        window.onload = function () {
             initChart();
             updateUI();
+            checkModelStatus();
         };
     </script>
 </body>
