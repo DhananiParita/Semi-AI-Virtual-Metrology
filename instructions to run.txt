@@ -1,0 +1,23 @@
+# ==========================================
+# VERCEL TERMINAL CHEAT SHEET
+# (For when you open a fresh terminal)
+# ==========================================
+
+# 1. TEST LOCALLY
+# Run this to test code on your own machine.
+# It gives you a localhost link. Ctrl + Click to open.
+vercel dev
+
+# 2. FIND YOUR LIVE LINK
+# Run this if you lost the actual website URL.
+# It lists all your past deployments.
+vercel ls
+
+# 3. PUSH AN UPDATE
+# Run this after making changes in VS Code.
+# It updates the live site with your new code.
+vercel
+
+# 4. PUSH TO PRODUCTION
+# Run this to push the final, official version.
+vercel --prod
