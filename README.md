@@ -186,7 +186,3 @@ flask run --port 5001
 - **Frontend:** Vanilla JS, Chart.js
 - **Reports:** FPDF
 - **Dataset:** SECOM — UCI Machine Learning Repository
-=======
-# Semi-AI-Virtual-Metrology
-Semi-AI-Virtual-Metrology
->>>>>>> b92b0f07e5bec6a2b53008beff81b8faf860431f
